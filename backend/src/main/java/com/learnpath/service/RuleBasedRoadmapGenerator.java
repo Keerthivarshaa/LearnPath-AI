@@ -1,12 +1,18 @@
 package com.learnpath.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
 import com.learnpath.dto.MilestoneDTO;
 import com.learnpath.dto.RecommendationDTO;
 import com.learnpath.model.AssessmentResult;
 import com.learnpath.model.User;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class RuleBasedRoadmapGenerator implements RoadmapGenerator {
@@ -106,7 +112,7 @@ public class RuleBasedRoadmapGenerator implements RoadmapGenerator {
         );
     }
 
-    private RecommendationDTO generateOnboardingRoadmap(String goal, Integer studyHours, String level) {
+        private RecommendationDTO generateOnboardingRoadmap(String goal, Integer studyHours, String level) {
         List<MilestoneDTO> milestones = new ArrayList<>();
         milestones.add(new MilestoneDTO(
                 "Diagnostic Quiz",
@@ -159,7 +165,7 @@ public class RuleBasedRoadmapGenerator implements RoadmapGenerator {
         );
     }
 
-    private List<MilestoneDTO> getMilestonesTemplate(String goal) {
+     List<MilestoneDTO> getMilestonesTemplate(String goal) {
         List<MilestoneDTO> milestones = new ArrayList<>();
 
         if (goal.contains("Solutions Architect")) {

@@ -16,6 +16,15 @@ public class RecommendationDTO {
     private Map<String, String> weeklyPlan;
     private boolean isOnboarding;
 
+    // --- New fields (ML integration) ---
+    // All three stay null when the AI service is unavailable or hasn't
+    // been called yet - existing frontend code that doesn't know about
+    // them is unaffected, and the existing 11-arg constructor below is
+    // deliberately left unchanged so no existing call site needs to change.
+    private Double readinessScore;
+    private String readinessLevel;
+    private String readinessExplanation;
+
     public RecommendationDTO() {
     }
 
@@ -119,5 +128,29 @@ public class RecommendationDTO {
 
     public void setOnboarding(boolean onboarding) {
         isOnboarding = onboarding;
+    }
+
+    public Double getReadinessScore() {
+        return readinessScore;
+    }
+
+    public void setReadinessScore(Double readinessScore) {
+        this.readinessScore = readinessScore;
+    }
+
+    public String getReadinessLevel() {
+        return readinessLevel;
+    }
+
+    public void setReadinessLevel(String readinessLevel) {
+        this.readinessLevel = readinessLevel;
+    }
+
+    public String getReadinessExplanation() {
+        return readinessExplanation;
+    }
+
+    public void setReadinessExplanation(String readinessExplanation) {
+        this.readinessExplanation = readinessExplanation;
     }
 }

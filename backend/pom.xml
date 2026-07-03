@@ -29,6 +29,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--
+            Added for Level 1a - Part 5 (Spring Boot <-> FastAPI integration).
+            Provides WebClient. Does NOT make the application reactive:
+            spring-boot-starter-web (above) is still present, so Spring
+            Boot's web-application-type detection keeps this a standard
+            Servlet/Tomcat app. WebClient is used synchronously (.block())
+            from MLRoadmapGenerator/AiReadinessClient.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
