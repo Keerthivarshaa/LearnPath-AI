@@ -77,6 +77,34 @@ class ReadinessModel:
         self._model = self._try_load_model()
 
     def _try_load_model(self):
+        print("MODEL PATH:", self._model_path)
+        print("MODEL EXISTS:", self._model_path.exists())
+
+        if not self._model_path.exists():
+            logger.info(
+                "No trained readiness model found at %s - using fallback heuristic.",
+                self._model_path,
+            )
+            return None
+
+        try:
+            import joblib
+
+            model = joblib.load(self._model_path)
+            print("TRAINED MODEL LOADED SUCCESSFULLY")
+            logger.info("Loaded trained readiness model from %s", self._model_path)
+            return model
+
+        except Exception as exc:
+            print("LOAD ERROR:", exc)
+            logger.warning(
+                "Failed to load trained model at %s (%s) - using fallback heuristic instead.",
+                self._model_path,
+                exc,
+            )
+            return None
+
+    '''def _try_load_model(self):
         if not self._model_path.exists():
             logger.info(
                 "No trained readiness model found at %s - using fallback heuristic.",
@@ -95,7 +123,7 @@ class ReadinessModel:
                 self._model_path,
                 exc,
             )
-            return None
+            return None'''
 
     @property
     def is_using_trained_model(self) -> bool:

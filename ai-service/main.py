@@ -13,7 +13,7 @@ Run locally:
 
 from fastapi import FastAPI
 
-from app.api.routes import health, ml
+from app.api.routes import dl, health, ml
 
 app = FastAPI(
     title="LearnPath AI - ML Service",
@@ -26,3 +26,4 @@ app = FastAPI(
 
 app.include_router(health.router)
 app.include_router(ml.router)
+app.include_router(dl.router)
