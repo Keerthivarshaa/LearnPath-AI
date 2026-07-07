@@ -36,3 +36,9 @@ desktop.ini
 .env
 .env.local
 .env.production
+# ===========================
+# AI Service Models
+# ===========================
+ai-service/app/ml/models/
+ai-service/app/dl/models/
+ai-service/app/nlp/models/intent_classifier/

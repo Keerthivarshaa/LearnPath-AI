@@ -11,11 +11,12 @@ mirrors app/ml/readiness_model.py's design deliberately:
     MODEL_PATH on startup, exactly like ReadinessModel, and falls back to
     a clearly-labeled placeholder if none exists or loading fails.
 
-Status: no trained head exists yet - see train.py and
-app/dl/data/README.md for why, and how to produce one. Predictions from
-the untrained placeholder are NOT meaningful (the head's weights are
-random); they exist purely so this endpoint can be exercised end-to-end
-and never crashes, before real training data is available.
+Status: a trained head has been fitted via train.py and persisted to
+MODEL_PATH - predictions come from the trained model
+(model_source: "trained_cnn"), not the untrained placeholder. The
+dataset is still intentionally small; it will be expanded and the model
+retrained later without any code changes here - StudyImageClassifier
+just reloads whatever .keras file exists at MODEL_PATH.
 
 This module is fully independent of app/ml/ (the certification-readiness
 pipeline) - no imports between the two, no shared state.
@@ -155,3 +156,58 @@ def get_study_image_classifier() -> StudyImageClassifier:
     if _classifier is None:
         _classifier = StudyImageClassifier()
     return _classifier
+
+
+def predict_study_image(image_bytes: bytes) -> Dict:
+    """
+    Thin wrapper around the existing StudyImageClassifier singleton,
+    reshaping its output for future internal (non-HTTP) callers - e.g.
+    a later /chat orchestration step calling this directly in-process,
+    not over the network.
+
+    Deliberately transport-independent: takes and knows nothing beyond
+    raw bytes. No base64/JSON/multipart decoding happens here or ever
+    should - that belongs at whichever HTTP layer eventually owns the
+    incoming request (the existing /ml/classify-study-image route, and
+    later /chat). Both will be able to call into this same function
+    without either one duplicating preprocessing or model logic.
+
+    Does not duplicate preprocessing or prediction - calls
+    get_study_image_classifier().predict() (unchanged) and only renames/
+    reshapes keys:
+        predicted_category -> topic
+        confidence          -> confidence   (unchanged)
+        top_predictions     -> top_predictions (unchanged)
+        model_source        -> model_source (unchanged, kept per
+                                explicit decision: useful for debugging,
+                                future fallback logic in /chat, and
+                                confirming trained vs placeholder state
+                                after a future retrain)
+
+    Future integration:
+      - OCR (Module 3): independent of this function; OCR will run on
+        the same raw image bytes separately (its own module, its own
+        text-extraction concern) and its output sits alongside this
+        one, not through it.
+      - NLP / BERT (Module 4+): operate on text (the user's question,
+        OCR output), not on this function's output - no direct
+        dependency, but the Prompt Builder consumes both.
+      - Prompt Builder (later module): calls this function when an
+        image is present, reads result["topic"] (and optionally
+        result["confidence"]/["model_source"] to decide how much to
+        trust it) as one of several inputs merged into the final
+        prompt, alongside OCR text, BERT intent, learner profile, and
+        conversation history.
+      - /chat route (orchestration): will call this function directly
+        in-process (same Python service, same import) when an image is
+        attached to a request - no new network hop, no new client class,
+        exactly like get_readiness_model()/get_study_image_classifier()
+        are already called in-process by their respective routes today.
+    """
+    result = get_study_image_classifier().predict(image_bytes)
+    return {
+        "topic": result["predicted_category"],
+        "confidence": result["confidence"],
+        "top_predictions": result["top_predictions"],
+        "model_source": result["model_source"],
+    }
