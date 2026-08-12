@@ -26,7 +26,7 @@ async def generate_response(request: LLMRequest):
     """
     Generate a personalized AI response.
     """
-
+    print("✅ LLM ROUTE HIT")
     service = get_llm_service()
 
     try:

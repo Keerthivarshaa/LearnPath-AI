@@ -42,3 +42,4 @@ desktop.ini
 ai-service/app/ml/models/
 ai-service/app/dl/models/
 ai-service/app/nlp/models/intent_classifier/
+ai-service/venv/

@@ -1,0 +1,9 @@
+Java is an object-oriented programming language.
+
+JVM executes Java bytecode.
+
+Encapsulation hides implementation details.
+
+Inheritance allows one class to inherit properties from another.
+
+Polymorphism allows one interface to have multiple implementations.

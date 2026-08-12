@@ -8,19 +8,19 @@ The Prompt Builder does NOT call any AI model itself.
 Its only responsibility is to organize learner context.
 """
 
-from typing import List, Optional
+from typing import Optional
 
 
 class PromptBuilder:
-
     @staticmethod
     def build_prompt(
         learner_question: str,
-        intent: str = "GENERAL_CHAT",
-        readiness_score: Optional[float] = None,
-        knowledge_gaps: Optional[List[str]] = None,
-        ocr_text: Optional[str] = None,
-        image_prediction: Optional[str] = None,
+        intent: str,
+        readiness_score: float,
+        knowledge_gaps: list[str],
+        ocr_text: str = "",
+        image_prediction: str = "",
+        retrieved_context: list[str] | None = None,
     ) -> str:
         """
         Builds a structured prompt for the language model.
@@ -55,15 +55,26 @@ class PromptBuilder:
                 f"\nOCR Extracted Text:\n{ocr_text}"
             )
 
+        # -----------------------------
+        # RAG Retrieved Context
+        # -----------------------------
+        if retrieved_context:
+            prompt.append("\n### Retrieved Study Material ###")
+
+            for chunk in retrieved_context:
+                prompt.append(f"\n- {chunk}")
+
         prompt.append(
             "\n### Instructions ###"
         )
 
         prompt.append(
             "Generate a personalized response suitable for the learner's "
-            "current understanding. Explain concepts clearly, focus on "
-            "knowledge gaps, and provide practical guidance when appropriate."
+            "current understanding. "
+            "Use the retrieved study material whenever it is relevant and "
+            "prioritize it over general knowledge. "
+            "Explain concepts clearly, focus on knowledge gaps, and provide "
+            "practical guidance when appropriate."
         )
 
         return "\n".join(prompt)
-    

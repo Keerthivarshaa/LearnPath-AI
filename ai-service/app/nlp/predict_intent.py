@@ -11,7 +11,6 @@ or
 
 from app.nlp.intent_classifier import IntentClassifier
 
-
 def main():
     classifier = IntentClassifier()
 

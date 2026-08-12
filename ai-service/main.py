@@ -13,7 +13,13 @@ Run locally:
 
 from fastapi import FastAPI
 
-from app.api.routes import dl, health, llm, ml, nlp, ocr, prompt
+from app.api.routes import dl, health, llm, ml, nlp, ocr, prompt, rag ,agent
+import os
+
+print("=" * 60)
+print("MAIN FILE LOADED")
+print(__file__)
+print("=" * 60)
 
 app = FastAPI(
     title="LearnPath AI - ML Service",
@@ -31,3 +37,13 @@ app.include_router(ocr.router)
 app.include_router(nlp.router)
 app.include_router(prompt.router)
 app.include_router(llm.router)
+app.include_router(rag.router)
+app.include_router(agent.router)
+
+@app.get("/test123")
+def test123():
+    print("🔥 TEST123 HIT")
+    return {"message": "working"}
+print("\nREGISTERED ROUTES:")
+for route in app.routes:
+    print(route.path)

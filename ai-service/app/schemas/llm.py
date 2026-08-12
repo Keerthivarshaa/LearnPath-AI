@@ -46,7 +46,6 @@ class LLMRequest(BaseModel):
         description="Predicted topic from the CNN image classifier."
     )
 
-
 class LLMResponse(BaseModel):
     """
     Response returned by the AI Tutor.
@@ -55,6 +54,11 @@ class LLMResponse(BaseModel):
     prompt: str = Field(
         ...,
         description="Prompt sent to the language model."
+    )
+
+    retrieved_context: List[str] = Field(
+        default_factory=list,
+        description="Study material retrieved from the RAG module."
     )
 
     response: str = Field(
