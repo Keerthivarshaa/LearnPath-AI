@@ -3,3 +3,9 @@ __pycache__/
 .venv/
 venv/
 .env
+# ===========================
+# RAG runtime data and uploads
+# ===========================
+app/rag/storage/chunks.pkl
+app/rag/storage/faiss.index
+app/rag/storage/documents/
